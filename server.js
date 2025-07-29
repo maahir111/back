@@ -8,7 +8,7 @@ import userRoutes from './routes/userRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = 'mongodb+srv://garaad:%401212@graadtech01.4mbdblf.mongodb.net/portfolioDB?retryWrites=true&w=majority';
+const MONGO_URI = 'mongodb+srv://daadira392:vehIS7gZF8F0kDuF@corevana.dwla0ss.mongodb.net/?retryWrites=true&w=majority&appName=corevana';
 
 
 // Middleware
