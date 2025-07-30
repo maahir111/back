@@ -7,7 +7,7 @@ import projectRoutes from './routes/projectRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 const MONGO_URI = 'mongodb+srv://daadira392:vehIS7gZF8F0kDuF@corevana.dwla0ss.mongodb.net/?retryWrites=true&w=majority&appName=corevana';
 
 
