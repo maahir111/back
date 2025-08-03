@@ -43,7 +43,7 @@ export const forgotPassword = async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '15m' });
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '2h' });
     // NOTE: Here you would send this token via email in a real app
     res.status(200).json({ message: 'Reset token generated', token });
   } catch (err) {
