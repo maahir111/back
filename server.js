@@ -4,11 +4,15 @@ import cors from 'cors';
 import path from 'path';
 import testimonialRoutes from './routes/testimonialRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
-import userRoutes from './routes/userRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-const MONGO_URI = 'mongodb+srv://daadira392:vehIS7gZF8F0kDuF@corevana.dwla0ss.mongodb.net/?retryWrites=true&w=majority&appName=corevana';
+const MONGO_URI = 'mongodb+srv://garaad:%401212@graadtech01.4mbdblf.mongodb.net/portfolioDB?retryWrites=true&w=majority';
 
 
 // Middleware
@@ -29,7 +33,7 @@ mongoose.connect(MONGO_URI)
 // Routes
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/projects', projectRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
