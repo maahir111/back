@@ -1,6 +1,6 @@
 import express from 'express';
 import Testimonial from '../models/Testimonial.js';
-import { addTestimonial, getTestimonials, updateTestimonial, deleteTestimonial, getTestimonialById } from '../controllers/testimonialController.js';
+// import { addTestimonial, getTestimonials, updateTestimonial, deleteTestimonial, getTestimonialById } from '../controllers/testimonialController.js';
 // import multer from 'multer';
 // import path from 'path';
 // import fs from 'fs';
