@@ -1,21 +1,24 @@
+import express from 'express';
 import Testimonial from '../models/Testimonial.js';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import { addTestimonial, getTestimonials, updateTestimonial, deleteTestimonial, getTestimonialById } from '../controllers/testimonialController.js';
+// import multer from 'multer';
+// import path from 'path';
+// import fs from 'fs';
+
 
 
 // Set up storage for uploaded files
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Sawirada waxaa lagu kaydinayaa galka 'uploads/'
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/'); // Sawirada waxaa lagu kaydinayaa galka 'uploads/'
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+//   },
+// });
 
 // Init upload middleware
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
 // @desc    Add a new testimonial
 // @route   POST /api/testimonials
@@ -23,7 +26,7 @@ const upload = multer({ storage: storage });
 const addTestimonial = async (req, res) => {
   try {
     const { fullName, subject, text, rating } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : ''; // Save the path to the image
+    const image = req.file ? req.file.path : ""; // Cloudinary URL
 
     const newTestimonial = new Testimonial({
       fullName,
@@ -38,7 +41,8 @@ const addTestimonial = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
+}
+
 
 // @desc    Get all testimonials
 // @route   GET /api/testimonials
@@ -74,7 +78,7 @@ const getTestimonialById = async (req, res) => {
 const updateTestimonial = async (req, res) => {
   try {
     const { fullName, subject, text, rating } = req.body;
-    let image = req.body.image; // Haddii sawirka cusub aan lasoo dirin
+    let image = req.body.image;
 
     const testimonial = await Testimonial.findById(req.params.id);
 
@@ -82,24 +86,10 @@ const updateTestimonial = async (req, res) => {
       return res.status(404).json({ message: 'Testimonial not found' });
     }
 
-    // Haddii sawir cusub la upload-gareeyay
     if (req.file) {
-      image = `/uploads/${req.file.filename}`;
-
-      // Haddii testimonial-ka uu horey u lahaa sawir, tirtir kii hore
-      if (testimonial.image) {
-        const oldImagePath = path.join('uploads', path.basename(testimonial.image));
-        fs.unlink(oldImagePath, (err) => {
-          if (err) {
-            console.error('Failed to delete old image:', err);
-          } else {
-            console.log('Old image deleted:', oldImagePath);
-          }
-        });
-      }
+      image = req.file.path; // Cloudinary URL
     }
 
-    // Update xogaha
     testimonial.fullName = fullName || testimonial.fullName;
     testimonial.subject = subject || testimonial.subject;
     testimonial.text = text || testimonial.text;
@@ -110,10 +100,9 @@ const updateTestimonial = async (req, res) => {
     res.json(updatedTestimonial);
 
   } catch (error) {
-    console.error('Update error:', error);
     res.status(500).json({ message: 'Server error' });
   }
-};
+}
 
 
 // @desc    Delete a testimonial
@@ -124,19 +113,7 @@ const deleteTestimonial = async (req, res) => {
     const testimonial = await Testimonial.findById(req.params.id);
 
     if (testimonial) {
-      // Haddii testimonial-ka leeyahay sawir, ka saar file-ka disk-ga
-      if (testimonial.image) {
-        const filePath = path.join('uploads', path.basename(testimonial.image));
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error('Failed to delete image file:', err);
-          } else {
-            console.log('Image file deleted:', filePath);
-          }
-        });
-      }
-
-      await testimonial.deleteOne(); // Delete from DB
+      await testimonial.deleteOne();
       res.json({ message: 'Testimonial removed' });
     } else {
       res.status(404).json({ message: 'Testimonial not found' });
@@ -144,6 +121,6 @@ const deleteTestimonial = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
+}
 
-export { addTestimonial, getTestimonials, getTestimonialById, updateTestimonial, deleteTestimonial, upload }; 
+export { addTestimonial, getTestimonials, getTestimonialById, updateTestimonial, deleteTestimonial };

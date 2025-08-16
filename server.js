@@ -5,6 +5,7 @@ import path from 'path';
 import testimonialRoutes from './routes/testimonialRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import uploadRoutes from "./routes/uploadRoutes.js";
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -18,7 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from uploads folder
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+// app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Connect to MongoDB
 mongoose.connect(MONGO_URI)
@@ -32,6 +33,7 @@ mongoose.connect(MONGO_URI)
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/auth', authRoutes);
+app.use("/api/upload", uploadRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

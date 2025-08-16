@@ -1,6 +1,7 @@
 import express from 'express';
 import { addProject, getProjects, updateProject, deleteProject, getProjectById, upload } from '../controllers/projectController.js';
 import { protect } from '../middleware/authMiddleware.js';
+import upload from '../middleware/multer.js'; // ✅ Cloudinary Multer middleware
 
 const router = express.Router();
 

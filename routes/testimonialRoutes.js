@@ -1,6 +1,7 @@
 import express from 'express';
 import { addTestimonial, getTestimonials, updateTestimonial, deleteTestimonial, upload, getTestimonialById } from '../controllers/testimonialController.js';
 import { protect } from '../middleware/authMiddleware.js';
+import upload from '../middleware/multer.js';
 
 const router = express.Router();
 

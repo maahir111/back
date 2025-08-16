@@ -1,19 +1,18 @@
-import Project from '../models/Project.js';
-import multer from 'multer';
-import path from 'path';
+// // import multer from 'multer';
+// import path from 'path';
 
 // Set up storage for uploaded files
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Sawirada waxaa lagu kaydinayaa galka 'uploads/'
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'uploads/'); // Sawirada waxaa lagu kaydinayaa galka 'uploads/'
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+//   },
+// });
 
 // Init upload middleware
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
 // @desc    Add a new project
 // @route   POST /api/projects
@@ -21,7 +20,9 @@ const upload = multer({ storage: storage });
 const addProject = async (req, res) => {
   try {
     const { title, description, link } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : ''; // Save the path to the image
+
+    // Cloudinary URL waxaa lagu heli doonaa req.file.path
+    const image = req.file ? req.file.path : "";
 
     const newProject = new Project({
       title,
@@ -55,10 +56,13 @@ const getProjects = async (req, res) => {
 const updateProject = async (req, res) => {
   try {
     const { title, description, link } = req.body;
-    let image = req.body.image; // Assume image is sent as a string if not changed
 
+    // default: haddii image la soo dirin, isticmaal kii hore
+    let image = req.body.image;
+
+    // haddii image cusub la upload gareeyay → Cloudinary URL
     if (req.file) {
-      image = `/uploads/${req.file.filename}`;
+      image = req.file.path;
     }
 
     const project = await Project.findById(req.params.id);
@@ -67,12 +71,12 @@ const updateProject = async (req, res) => {
       project.title = title || project.title;
       project.description = description || project.description;
       project.link = link || project.link;
-      project.image = image || project.image; // Update image path
+      project.image = image || project.image;
 
       const updatedProject = await project.save();
       res.json(updatedProject);
     } else {
-      res.status(404).json({ message: 'Project not found' });
+      res.status(404).json({ message: "Project not found" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -114,4 +118,4 @@ const getProjectById = async (req, res) => {
   }
 };
 
-export { addProject, getProjects, updateProject, deleteProject, getProjectById, upload }; 
+export { addProject, getProjects, updateProject, deleteProject, getProjectById }; 
