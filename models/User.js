@@ -10,15 +10,15 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ KU DAR: Password hashing middleware
+// ✅ KU DAR: Password Hashing Middleware (VERY IMPORTANT)
 userSchema.pre('save', async function(next) {
-  // Hash password only if it has been modified (or is new)
+  // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) return next();
   
   try {
-    // Generate salt and hash password
-    const saltRounds = 10;
-    this.password = await bcrypt.hash(this.password, saltRounds);
+    // Hash the password with salt rounds = 10
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
     next(error);
