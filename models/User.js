@@ -12,9 +12,17 @@ const userSchema = new mongoose.Schema(
 
 // ✅ KU DAR: Password hashing middleware
 userSchema.pre('save', async function(next) {
+  // Hash password only if it has been modified (or is new)
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
+  
+  try {
+    // Generate salt and hash password
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default mongoose.model('User', userSchema);
